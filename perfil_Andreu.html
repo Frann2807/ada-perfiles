@@ -457,9 +457,13 @@ body.view-only .edit-only { display:none !important; }
         <div id="profilesSection" style="display: none;">
         <div id="profilesServerStatus" style="font-size:8px;color:var(--text2);margin-bottom:6px;">Servidor: no detectado</div>
         <div style="display:flex;gap:4px;margin-bottom:8px;">
-          <button class="topbar-btn" onclick="pushProfilesToServer().then(r=>{if(r)showToast('Perfiles guardados en el servidor: '+(r.length||0))})" style="font-size:9px;padding:2px 8px;" title="Guardar los datos de todos los clientes en perfiles/*.json">&#11014; Guardar en servidor</button>
-          <button class="topbar-btn" onclick="syncServerProfiles().then(()=>{renderAll();})" style="font-size:9px;padding:2px 8px;" title="Recargar los datos desde perfiles/*.json">&#11015; Recargar del servidor</button>
+          <button class="topbar-btn save-btn" onclick="publishEverything()" style="font-size:9px;padding:2px 8px;" title="Guarda los datos, los sincroniza a perfiles/*.json y publica los links de GitHub Pages">🚀 Guardar y publicar</button>
+          <button class="topbar-btn" onclick="pushProfilesToServer().then(r=>{if(r)showToast('Perfiles guardados en el servidor: '+(r.length||0))})" style="font-size:9px;padding:2px 8px;" title="Guardar los datos de todos los clientes en perfiles/*.json">⬆ Guardar en servidor</button>
+          <button class="topbar-btn" onclick="syncServerProfiles().then(()=>{renderAll();})" style="font-size:9px;padding:2px 8px;" title="Recargar los datos desde perfiles/*.json">⬇ Recargar del servidor</button>
         </div>
+        <label style="display:flex;align-items:center;gap:6px;font-size:10px;color:var(--text2);margin-bottom:8px;cursor:pointer;">
+          <input type="checkbox" id="autoPublishChk" style="width:12px;height:12px;" onchange="toggleAutoPublish(this.checked)"> Publicar automáticamente al guardar (Ctrl+S)
+        </label>
         <div style="font-size:8px;color:var(--text2);margin-bottom:6px;">Generá un HTML autocontenido con UN solo cliente para compartir, o importá los cambios que te devuelva.</div>
         <div style="margin-bottom:6px;">
           <label style="font-size:10px;color:var(--text2);display:block;margin-bottom:2px;">Cliente a exportar:</label>
@@ -8415,7 +8419,13 @@ function saveProject() {
   updateVersionBadge();
   showToast('Proyecto guardado: ' + snapshot.companyName + ' V' + snapshot.version);
   // FASE 2: persistir también en perfiles/*.json del servidor local
-  if (isServerMode()) pushProfilesToServer();
+  if (isServerMode()) {
+    pushProfilesToServer();
+    // Auto-publicar si está activado
+    try {
+      if (localStorage.getItem('autoPublish') === 'on') publishEverything();
+    } catch (e) {}
+  }
 }
 
 function loadProjectById(id) {
@@ -9586,6 +9596,36 @@ async function updateServerStatus() {
     const names = Object.keys(profiles || {});
     el.textContent = 'Servidor: ' + names.length + ' perfil(es) en disco' + (names.length > 0 ? ' (' + names.join(', ') + ')' : ' - se migrarán tus datos al entrar');
   }
+}
+
+async function publishEverything() {
+  if (!isServerMode()) { showToast('Abrí la app desde http://localhost:8080 para publicar'); return; }
+  showToast('Guardando y publicando...');
+  saveCurrentClientData();
+  const saved = await pushProfilesToServer();
+  if (!saved) return;
+  try {
+    const r = await fetch('/api/publish', { method: 'POST' });
+    const res = await r.json();
+    if (res && res.ok) {
+      showToast('✅ Publicado: ' + (res.msg || 'listo'));
+    } else {
+      showToast('❌ ' + ((res && res.msg) || 'Error al publicar'));
+    }
+  } catch (e) {
+    showToast('❌ Error al publicar: ' + e.message);
+  }
+}
+
+function toggleAutoPublish(checked) {
+  try { localStorage.setItem('autoPublish', checked ? 'on' : 'off'); } catch (e) {}
+  if (checked) showToast('Auto-publicar activado: Ctrl+S publica solo');
+}
+
+function applyAutoPublishState() {
+  const chk = document.getElementById('autoPublishChk');
+  if (!chk) return;
+  try { chk.checked = localStorage.getItem('autoPublish') === 'on'; } catch (e) {}
 }
 
 function drawBaseMap() {
@@ -12204,6 +12244,7 @@ async function init() {
   initCanvases();
   fitMap();
   applyPanelSectionState();
+  applyAutoPublishState();
   state.viewOnly = APP_CONFIG.viewOnly === true;
   if (state.viewOnly) document.body.classList.add('view-only');
 
