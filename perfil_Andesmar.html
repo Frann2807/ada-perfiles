@@ -83,6 +83,7 @@ body.light #toastMsg { color:#ffffff !important; }
 /* Canvas overrides */
 body.light canvas { filter: none; }
 body.view-only .edit-only { display:none !important; }
+body.view-only .admin-only, body.mode-user .admin-only { display:none !important; }
 #app {
   display: flex;
   flex-direction: column;
@@ -350,23 +351,24 @@ body.view-only .edit-only { display:none !important; }
 
 <div id="app">
   <div id="topbar">
-    <div class="client-selector edit-only" onclick="toggleClientMenu()">
+    <div class="client-selector edit-only admin-only" onclick="toggleClientMenu()">
       <span>CLIENTE:</span><span id="clientName">Andreu</span><span class="arrow">▼</span>
     </div>
     <div class="divider"></div>
-    <span class="title-main">PANEL DE ANÁLISIS DE EFICIENCIA LOGÍSTICA - <span class="title-accent" id="titleCompany">Andreu</span><span class="version-badge" id="versionBadge" title="Versión actual">V577</span><span id="clientStatsBadge" style="margin-left:6px;font-size:10px;cursor:pointer;border:1px solid var(--border);border-radius:3px;padding:0 6px;color:var(--text2);" onclick="showClientDiagnostic()" title="Ver diagnóstico de clientes">📊</span><span id="clientCountBadge" style="margin-left:4px;font-size:10px;color:var(--text2);">(3 clientes)</span></span>
+    <span class="title-main">PANEL DE ANÁLISIS DE EFICIENCIA LOGÍSTICA - <span class="title-accent" id="titleCompany">Andreu</span><span class="version-badge" id="versionBadge" title="Versión actual">V577</span><span id="clientStatsBadge" class="admin-only" style="margin-left:6px;font-size:10px;cursor:pointer;border:1px solid var(--border);border-radius:3px;padding:0 6px;color:var(--text2);" onclick="showClientDiagnostic()" title="Ver diagnóstico de clientes">📊</span><span id="clientCountBadge" style="margin-left:4px;font-size:10px;color:var(--text2);">(3 clientes)</span></span>
     <div class="topbar-actions">
       <button class="topbar-btn" onclick="toggleTheme()" id="themeBtn" title="Tema claro/oscuro">☼</button>
       <button class="topbar-btn" onclick="changeZoom(-5)" title="Reducir zoom">−</button>
       <input type="text" id="zoomLabel" value="100" style="width:38px;font-size:10px;text-align:center;background:var(--bg3);color:var(--text);border:1px solid var(--border);border-radius:3px;padding:1px 2px;" onchange="setZoom(this.value)" title="Escribí el zoom deseado">
       <span style="font-size:10px;color:var(--text2);">%</span>
       <button class="topbar-btn" onclick="changeZoom(5)" title="Aumentar zoom">+</button>
-      <button class="topbar-btn edit-only" onclick="newProject()" title="Nuevo proyecto">➕ Nuevo</button>
-      <button class="topbar-btn save-btn edit-only" onclick="saveProject()" title="Guardar proyecto (Ctrl+S)">💾 Guardar</button>
-      <button class="topbar-btn edit-only" onclick="showLoadDialog()" title="Cargar proyecto (Ctrl+O)">📂 Cargar</button>
-      <button class="topbar-btn edit-only" onclick="exportJSON()" title="Exportar como JSON">📤 Exportar</button>
-      <button class="topbar-btn edit-only" onclick="importJSON()" title="Importar desde JSON">📥 Importar</button>
-      <button class="topbar-btn save-btn edit-only" id="gitPushBtn" onclick="exportFullHTML()" title="Bajá el HTML, luego ejecutá subir.ps1 para subir a GitHub">💾 HTML+Git</button>
+      <button class="topbar-btn admin-only" onclick="newProject()" title="Nuevo proyecto">➕ Nuevo</button>
+      <button class="topbar-btn save-btn" onclick="saveProject()" title="Guardar proyecto (Ctrl+S)">💾 Guardar</button>
+      <button class="topbar-btn admin-only" onclick="showLoadDialog()" title="Cargar proyecto (Ctrl+O)">📂 Cargar</button>
+      <button class="topbar-btn" onclick="exportJSON()" title="Exportar como JSON">📤 Exportar</button>
+      <button class="topbar-btn admin-only" onclick="importJSON()" title="Importar desde JSON">📥 Importar</button>
+      <button class="topbar-btn save-btn admin-only" onclick="publishEverything()" title="Guarda, sincroniza perfiles y publica en GitHub Pages" style="display:none;" id="publishBtn">🚀 Publicar</button>
+      <button class="topbar-btn save-btn admin-only" id="gitPushBtn" onclick="exportFullHTML()" title="Bajá el HTML, luego ejecutá subir.ps1 para subir a GitHub">💾 HTML+Git</button>
       <span class="auto-save-indicator" id="autoSaveDot" title="Auto-guardado activo"></span>
     </div>
   </div>
@@ -452,7 +454,7 @@ body.view-only .edit-only { display:none !important; }
         </div>
       </div>
 
-      <div class="panel-section edit-only">
+      <div class="panel-section edit-only admin-only">
         <h3 style="cursor:pointer;user-select:none;" onclick="togglePanelSection('profilesSection','profilesChev')">PERFILES / COMPARTIR <button id="profilesChev" onclick="event.stopPropagation();togglePanelSection('profilesSection','profilesChev')" style="background:transparent;border:none;color:var(--accent);cursor:pointer;font-size:12px;padding:0 2px;float:right;margin-top:-2px;" title="Abrir/cerrar">▸</button></h3>
         <div id="profilesSection" style="display: none;">
         <div id="profilesServerStatus" style="font-size:8px;color:var(--text2);margin-bottom:6px;">Servidor: no detectado</div>
@@ -6625,7 +6627,8 @@ const APP_CONFIG = {
       }
     }
   },
-  "northAngle": 165
+  "northAngle": 165,
+  "mode": "user"
 };
 
 // ============================================================
@@ -6997,6 +7000,7 @@ function loadProjectById(id) {
 
 function showLoadDialog() {
   if (viewOnlyGuard()) return;
+  if (adminGuard()) return;
   const projects = getProjects();
   const overlay = document.getElementById('modalOverlay');
   const content = document.getElementById('modalContent');
@@ -7057,6 +7061,7 @@ function exportJSON() {
 
 function importJSON() {
   if (viewOnlyGuard()) return;
+  if (adminGuard()) return;
   const input = document.createElement('input');
   input.type = 'file';
   input.accept = '.json';
@@ -7175,6 +7180,7 @@ function generateFullHTML(callback) {
 }
 
 function exportFullHTML() {
+  if (adminGuard()) return;
   const clientCount = (state.config.availableClients || []).length;
   const cdCount = Object.keys(state.clientData).length;
   const warn = clientCount < 2 || cdCount < 2;
@@ -7530,6 +7536,7 @@ function cycleFontSize() {} // deprecated
 
 function newProject() {
   if (viewOnlyGuard()) return;
+  if (adminGuard()) return;
   if (state.dirty && !confirm('Hay cambios sin guardar. ¿Continuar de todos modos?')) return;
   const name = prompt('Nombre de la empresa para el nuevo proyecto:', 'Nuevo Cliente');
   if (!name) return;
@@ -7893,7 +7900,8 @@ function generateProfileHTML(clientName, viewOnly, callback) {
   const mapImg = (ac && typeof ac === 'object' && ac.mapImage) ? ac.mapImage : clean.mapImage;
   clean.availableClients = [{ name: clientName, mapImage: mapImg || '' }];
   clean.mapImage = mapImg || '';
-  if (viewOnly) clean.viewOnly = true;
+  clean.viewOnly = viewOnly;
+  clean.mode = viewOnly ? 'viewOnly' : 'user';
   embedMapImageForProfile(clientName, mapImg, function(finalMap) {
     if (finalMap) {
       clean.mapImage = finalMap;
@@ -7971,6 +7979,14 @@ function handleProfileImportFile(input) {
 }
 
 function isViewOnly() { return state.viewOnly === true; }
+
+function isAdminMode() { return state.appMode === 'admin'; }
+
+function adminGuard(msg) {
+  if (isAdminMode()) return false;
+  showToast(msg || 'Función disponible solo en modo administrador');
+  return true;
+}
 
 function viewOnlyGuard(msg) {
   if (!isViewOnly()) return false;
@@ -8097,6 +8113,7 @@ async function updateServerStatus() {
 }
 
 async function publishEverything() {
+  if (adminGuard()) return;
   if (!isServerMode()) { showToast('Abrí la app desde http://localhost:8080 para publicar'); return; }
   showToast('Guardando y publicando...');
   saveCurrentClientData();
@@ -10253,6 +10270,7 @@ function resetView() {
 // CLIENT SELECTOR
 // ============================================================
 function toggleClientMenu() {
+  if (adminGuard()) return;
   const existing = document.querySelector('.client-dropdown');
   if (existing) { existing.remove(); return; }
 
@@ -10317,6 +10335,7 @@ function toggleClientMenu() {
 
 function showClientManager() {
   if (viewOnlyGuard()) return;
+  if (adminGuard()) return;
   saveCurrentClientData();
   const overlay = document.getElementById('modalOverlay');
   const content = document.getElementById('modalContent');
@@ -10681,6 +10700,7 @@ function debugClientData() {
 // DIAGNÓSTICO DE CLIENTES
 // ============================================================
 function showClientDiagnostic() {
+  if (adminGuard()) return;
   const overlay = document.getElementById('modalOverlay');
   const content = document.getElementById('modalContent');
   const clients = state.config.availableClients || [];
@@ -10743,8 +10763,12 @@ async function init() {
   fitMap();
   applyPanelSectionState();
   applyAutoPublishState();
-  state.viewOnly = APP_CONFIG.viewOnly === true;
+  // Modo de la app: admin (todo), user (lite, sin opciones de dev) o viewOnly (solo lectura).
+  // Los perfiles de un solo cliente se comportan como 'user' aunque no tengan la bandera.
+  state.appMode = APP_CONFIG.mode || ((APP_CONFIG.availableClients || []).length <= 1 ? 'user' : 'admin');
+  state.viewOnly = APP_CONFIG.viewOnly === true || state.appMode === 'viewOnly';
   if (state.viewOnly) document.body.classList.add('view-only');
+  else if (state.appMode === 'user') document.body.classList.add('mode-user');
 
   const initialMapImage = state.config.mapImage;
   state.img = await loadImage();
@@ -10907,6 +10931,8 @@ async function init() {
 
   // Detectar si estamos corriendo en el servidor local
   if (isServerMode()) {
+    const pb = document.getElementById('publishBtn');
+    if (pb) pb.style.display = '';
     const btn = document.getElementById('gitPushBtn');
     if (btn) {
       btn.textContent = '⬆️ Push a GitHub';
