@@ -346,7 +346,7 @@ body.view-only .admin-only, body.mode-user .admin-only { display:none !important
   color: var(--text2); font-size:12px; margin-top:10px; text-align:center; max-width:80vw;
 }
 </style>
-</head>
+<style></style></head>
 <body style="zoom: 1;">
 
 <div id="app">
@@ -355,7 +355,7 @@ body.view-only .admin-only, body.mode-user .admin-only { display:none !important
       <span>CLIENTE:</span><span id="clientName">Andreu</span><span class="arrow">▼</span>
     </div>
     <div class="divider"></div>
-    <span class="title-main">PANEL DE ANÁLISIS - <span class="title-accent" id="titleCompany">Andreu</span><span class="version-badge" id="versionBadge" title="Versión actual">V577</span><span id="clientStatsBadge" class="admin-only" style="margin-left:6px;font-size:10px;cursor:pointer;border:1px solid var(--border);border-radius:3px;padding:0 6px;color:var(--text2);" onclick="showClientDiagnostic()" title="Ver diagnóstico de clientes">📊</span><span id="clientCountBadge" style="margin-left:4px;font-size:10px;color:var(--text2);">(3 clientes)</span></span>
+    <span class="title-main">PANEL DE ANÁLISIS - <span class="title-accent" id="titleCompany">Andreu</span><span class="version-badge" id="versionBadge" title="Versión actual">V8</span><span id="clientStatsBadge" class="admin-only" style="margin-left:6px;font-size:10px;cursor:pointer;border:1px solid var(--border);border-radius:3px;padding:0 6px;color:var(--text2);" onclick="showClientDiagnostic()" title="Ver diagnóstico de clientes">📊</span><span id="clientCountBadge" style="margin-left:4px;font-size:10px;color:var(--text2);">(3 clientes)</span></span>
     <div class="topbar-actions">
       <button class="topbar-btn" onclick="toggleTheme()" id="themeBtn" title="Tema claro/oscuro">☼</button>
       <button class="topbar-btn" onclick="changeZoom(-5)" title="Reducir zoom">−</button>
@@ -367,8 +367,8 @@ body.view-only .admin-only, body.mode-user .admin-only { display:none !important
       <button class="topbar-btn admin-only" onclick="showLoadDialog()" title="Cargar proyecto (Ctrl+O)">📂 Cargar</button>
       <button class="topbar-btn" onclick="exportJSON()" title="Exportar como JSON">📤 Exportar</button>
       <button class="topbar-btn admin-only" onclick="importJSON()" title="Importar desde JSON">📥 Importar</button>
-      <button class="topbar-btn save-btn admin-only" onclick="publishEverything()" title="Guarda, sincroniza perfiles y publica en GitHub Pages" style="display:none;" id="publishBtn">🚀 Publicar</button>
-      <button class="topbar-btn save-btn admin-only" id="gitPushBtn" onclick="exportFullHTML()" title="Bajá el HTML, luego ejecutá subir.ps1 para subir a GitHub">💾 HTML+Git</button>
+      <button class="topbar-btn save-btn admin-only" onclick="publishEverything()" title="Guarda, sincroniza perfiles y publica en GitHub Pages" style="" id="publishBtn">🚀 Publicar</button>
+      <button class="topbar-btn save-btn admin-only" id="gitPushBtn" onclick="exportFullHTML()" title="Subir cambios directamente a GitHub (1 click)">⬆️ Push a GitHub</button>
       <span class="auto-save-indicator" id="autoSaveDot" title="Auto-guardado activo"></span>
     </div>
   </div>
@@ -377,9 +377,9 @@ body.view-only .admin-only, body.mode-user .admin-only { display:none !important
     <div id="canvas-wrap" style="cursor: grab;">
       <canvas id="mapCanvas" width="1171" height="642"></canvas>
       <canvas id="overlayCanvas" width="1171" height="642"></canvas>
-      <div id="tooltip" style="display: none; left: 985px; top: 105px;"><div class="tt-title">Zona Storage</div>
+      <div id="tooltip" style="display: none; left: 807px; top: 68px;"><div class="tt-title">Racks - almacen</div>
       <div class="tt-row"><span>Tipo:</span><span>CUSTOM</span></div>
-      
+      <div style="color: var(--accent);font-size:9px;margin-top:2px;">📷 2 img</div>
       <div style="color: var(--accent);font-size:9px;margin-top:3px;">↪ Arrastrar para mover</div></div>
       <div id="contextMenu" style="display: none; left: 312px; top: 416px;"><div class="ctx-item" style="color: var(--accent);font-weight:600">Ruta_D_1</div><div class="ctx-sep"></div><div class="ctx-item" onclick="editTrajectory('id_1787768421627_wx32')">✎ Editar trayectoria</div><div class="ctx-item" onclick="deleteTrajectory('id_1787768421627_wx32')" style="color:#e74c3c">✕ Eliminar trayectoria</div><div class="ctx-item" onclick="startDrawZone()">▬ Dibujar nueva zona</div><div class="ctx-item" onclick="startDrawTraj()">↗ Dibujar trayectoria</div><div class="ctx-item" onclick="resetView()">⟳ Restaurar vista</div><div class="ctx-sep"></div><div class="ctx-item" onclick="clearAllData()" style="color:#e74c3c">⚠ Limpiar todos los datos</div></div>
     </div>
@@ -457,11 +457,11 @@ body.view-only .admin-only, body.mode-user .admin-only { display:none !important
       <div class="panel-section edit-only admin-only">
         <h3 style="cursor:pointer;user-select:none;" onclick="togglePanelSection('profilesSection','profilesChev')">PERFILES / COMPARTIR <button id="profilesChev" onclick="event.stopPropagation();togglePanelSection('profilesSection','profilesChev')" style="background:transparent;border:none;color:var(--accent);cursor:pointer;font-size:12px;padding:0 2px;float:right;margin-top:-2px;" title="Abrir/cerrar">▸</button></h3>
         <div id="profilesSection" style="display: none;">
-        <div id="profilesServerStatus" style="font-size:8px;color:var(--text2);margin-bottom:6px;">Servidor: no detectado</div>
+        <div id="profilesServerStatus" style="font-size:8px;color:var(--text2);margin-bottom:6px;">Servidor: 3 perfil(es) en disco (Oscar David, Andesmar, Andreu)</div>
         <div style="display:flex;gap:4px;margin-bottom:8px;">
           <button class="topbar-btn save-btn" onclick="publishEverything()" style="font-size:9px;padding:2px 8px;" title="Guarda los datos, los sincroniza a perfiles/*.json y publica los links de GitHub Pages">🚀 Guardar y publicar</button>
-          <button class="topbar-btn" onclick="pushProfilesToServer().then(r=>{if(r)showToast('Perfiles guardados en el servidor: '+(r.length||0))})" style="font-size:9px;padding:2px 8px;" title="Guardar los datos de todos los clientes en perfiles/*.json">⬆ Guardar en servidor</button>
-          <button class="topbar-btn" onclick="syncServerProfiles().then(()=>{renderAll();})" style="font-size:9px;padding:2px 8px;" title="Recargar los datos desde perfiles/*.json">⬇ Recargar del servidor</button>
+          <button class="topbar-btn" onclick="pushProfilesToServer().then(r=&gt;{if(r)showToast('Perfiles guardados en el servidor: '+(r.length||0))})" style="font-size:9px;padding:2px 8px;" title="Guardar los datos de todos los clientes en perfiles/*.json">⬆ Guardar en servidor</button>
+          <button class="topbar-btn" onclick="syncServerProfiles().then(()=&gt;{renderAll();})" style="font-size:9px;padding:2px 8px;" title="Recargar los datos desde perfiles/*.json">⬇ Recargar del servidor</button>
         </div>
         <label style="display:flex;align-items:center;gap:6px;font-size:10px;color:var(--text2);margin-bottom:8px;cursor:pointer;">
           <input type="checkbox" id="autoPublishChk" style="width:12px;height:12px;" onchange="toggleAutoPublish(this.checked)"> Publicar automáticamente al guardar (Ctrl+S)
@@ -469,7 +469,7 @@ body.view-only .admin-only, body.mode-user .admin-only { display:none !important
         <div style="font-size:8px;color:var(--text2);margin-bottom:6px;">Generá un HTML autocontenido con UN solo cliente para compartir, o importá los cambios que te devuelva.</div>
         <div style="margin-bottom:6px;">
           <label style="font-size:10px;color:var(--text2);display:block;margin-bottom:2px;">Cliente a exportar:</label>
-          <select id="profileClient" style="width:100%;font-size:10px;background:var(--bg3);border:1px solid var(--border);color:var(--text);border-radius:3px;padding:3px;"></select>
+          <select id="profileClient" style="width:100%;font-size:10px;background:var(--bg3);border:1px solid var(--border);color:var(--text);border-radius:3px;padding:3px;"><option value="Andreu">Andreu</option><option value="Andesmar">Andesmar</option><option value="Oscar David">Oscar David</option></select>
         </div>
         <label style="display:flex;align-items:center;gap:6px;font-size:10px;color:var(--text2);margin-bottom:8px;cursor:pointer;">
           <input type="checkbox" id="profileViewOnly" style="width:12px;height:12px;"> 🔒 Modo solo lectura (el cliente no puede editar)
@@ -998,7 +998,7 @@ body.view-only .admin-only, body.mode-user .admin-only { display:none !important
 
   <div id="statusbar">
     <span><span class="dot live"></span>SISTEMA ACTIVO</span>
-    <span>Mapa: <b id="mapName">Andreu_layout.png</b></span>
+    <span>Mapa: <b id="mapName">perfiles/Andreu.png</b></span>
     <span>Zonas: <b id="zoneCount">50</b></span>
     <span>Trayectorias: <b id="trajCount">4</b></span>
     <span>Equipos: <b id="fleetCountStatus">9</b></span>
@@ -10954,4 +10954,4 @@ init();
 </script>
 
 
-<div id="toastMsg" style="position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%); background: rgb(92, 206, 237); color: rgb(10, 14, 20); padding: 8px 20px; border-radius: 6px; font-size: 12px; font-weight: 600; z-index: 200; pointer-events: none; opacity: 0; transition: opacity 0.3s;">HTML exportado a Descargas: Andreu_completo.html</div></body></html>
+<div id="toastMsg" style="position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%); background: rgb(92, 206, 237); color: rgb(10, 14, 20); padding: 8px 20px; border-radius: 6px; font-size: 12px; font-weight: 600; z-index: 200; pointer-events: none; opacity: 1; transition: opacity 0.3s;">Generando HTML y subiendo a GitHub...</div></body></html>
