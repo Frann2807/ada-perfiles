@@ -4,7 +4,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
-<title>Panel de Análisis de Eficiencia Logística</title>
+<title>Panel de Análisis</title>
 <style>
 :root {
   --bg0: #0a0e14; --bg1: #12171f; --bg2: #161c26; --bg3: #0d1520; --bg4: #1a2230;
@@ -355,7 +355,7 @@ body.view-only .admin-only, body.mode-user .admin-only { display:none !important
       <span>CLIENTE:</span><span id="clientName">Andreu</span><span class="arrow">▼</span>
     </div>
     <div class="divider"></div>
-    <span class="title-main">PANEL DE ANÁLISIS DE EFICIENCIA LOGÍSTICA - <span class="title-accent" id="titleCompany">Andreu</span><span class="version-badge" id="versionBadge" title="Versión actual">V577</span><span id="clientStatsBadge" class="admin-only" style="margin-left:6px;font-size:10px;cursor:pointer;border:1px solid var(--border);border-radius:3px;padding:0 6px;color:var(--text2);" onclick="showClientDiagnostic()" title="Ver diagnóstico de clientes">📊</span><span id="clientCountBadge" style="margin-left:4px;font-size:10px;color:var(--text2);">(3 clientes)</span></span>
+    <span class="title-main">PANEL DE ANÁLISIS - <span class="title-accent" id="titleCompany">Andreu</span><span class="version-badge" id="versionBadge" title="Versión actual">V577</span><span id="clientStatsBadge" class="admin-only" style="margin-left:6px;font-size:10px;cursor:pointer;border:1px solid var(--border);border-radius:3px;padding:0 6px;color:var(--text2);" onclick="showClientDiagnostic()" title="Ver diagnóstico de clientes">📊</span><span id="clientCountBadge" style="margin-left:4px;font-size:10px;color:var(--text2);">(3 clientes)</span></span>
     <div class="topbar-actions">
       <button class="topbar-btn" onclick="toggleTheme()" id="themeBtn" title="Tema claro/oscuro">☼</button>
       <button class="topbar-btn" onclick="changeZoom(-5)" title="Reducir zoom">−</button>
@@ -12400,6 +12400,11 @@ async function init() {
     if (!state.img) { state.config.mapOpacity = 0; state.config.mapSaturation = 0; state.config.mapBrightness = 1; }
     document.getElementById('mapName').textContent = state.config.mapImage;
   }
+
+  // Asegurar que el topbar refleje el cliente actual (evita el nombre "horneado" en perfiles)
+  document.getElementById('clientName').textContent = state.config.companyName;
+  document.getElementById('titleCompany').textContent = state.config.companyName;
+  document.getElementById('mapName').textContent = state.config.mapImage;
 
   renderAll();
 
