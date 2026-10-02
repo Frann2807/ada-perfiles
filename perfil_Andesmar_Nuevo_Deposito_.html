@@ -6161,7 +6161,8 @@ const APP_CONFIG = {
     }
   },
   "northAngle": 165,
-  "mode": "user"
+  "mode": "user",
+  "defaultTheme": "light"
 };
 
 // ============================================================
@@ -7113,7 +7114,9 @@ function toggleTheme() {
 
 function applyTheme() {
   const saved = localStorage.getItem('theme');
-  if (saved === 'light') {
+  // Los perfiles exportados arrancan en tema claro salvo que el usuario ya haya elegido otro
+  const def = APP_CONFIG.defaultTheme === 'light' ? 'light' : 'dark';
+  if (saved === 'light' || (!saved && def === 'light')) {
     document.body.classList.add('light');
     document.getElementById('themeBtn').innerHTML = '&#9790;';
   }
@@ -7727,6 +7730,7 @@ function generateProfileHTML(clientName, viewOnly, callback) {
   clean.mapImage = mapImg || '';
   clean.viewOnly = viewOnly;
   clean.mode = viewOnly ? 'viewOnly' : 'user';
+  clean.defaultTheme = 'light';
   embedAllImagesInConfig(clean).then(function() {
     embedMapImageForProfile(clientName, clean.mapImage, function(finalMap) {
     if (finalMap) {
